@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import TransactionsTable from "../components/TransactionsTable";
-// import bsv from 'bsv'
+
 const SubmitPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [textData, setTextData] = useState("");
   const [apiKey, setApiKey] = useState("0fd30c69e8b48b58c23ead14d26380e5c105cbbe");
 
   const handleSubmit = async () => {
-
     if (!apiKey || !textData) {
       alert("Please provide both API key and text data.");
       return;
@@ -20,20 +19,25 @@ const SubmitPage = () => {
         textData,
         {
           headers: {
-            "x-api-key": `${apiKey}`,
+            "x-api-key": apiKey,
             "Content-Type": "application/octet-stream",
           },
         }
       );
 
-      console.log("API Response:", response.data);
+      setTransactions([
+        ...transactions,
+        {
+          id: response.data.txId,
+          apiKey,
+          originalData: textData,
+        },
+      ]);
 
-      // Add new transaction to the table
-      setTransactions([...transactions, { id:response.data.txId, apiKey }]);
-      setTextData(""); // Clear the text input
+      setTextData("");
     } catch (error) {
       console.error("Error submitting data:", error);
-      // alert("Failed to submit data. Please check your API key or network.");
+      alert("Failed to submit data. Please check your API key or network.");
     }
   };
 
@@ -46,8 +50,8 @@ const SubmitPage = () => {
           id="apiKey"
           placeholder="Enter your API key"
           className="w-full p-2 mb-4 border rounded outline outline-1"
-          value = {apiKey}
-          onChange={(e) => setApiKey(e.target.value)} // Update the API key state when input changes
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
         />
         
         <label className="block text-gray-700">Text Data:</label>

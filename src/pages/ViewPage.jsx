@@ -30,7 +30,7 @@ const ViewPage = () => {
       );
 
       console.log("API Response:", response.data);
-      setContent(response.data); // Update the content state with the fetched text data
+      setContent(response.data);
     } catch(e) {
       console.error("Error fetching data:", e);
     }
